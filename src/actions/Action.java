@@ -1,4 +1,4 @@
-package action;
+package actions;
 import model.Combatant; //yet to be implimented but this is the rough idea
 import java.util.List;
 
