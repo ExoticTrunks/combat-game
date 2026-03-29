@@ -1,4 +1,4 @@
-package action;
+package actions;
 // the idea behind using abstract right now is so we don't have to impliment the execute() method yet
 public abstract class SpecialSkill implements Action {
     private String name;
