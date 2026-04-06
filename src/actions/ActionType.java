@@ -1,5 +1,8 @@
 package actions;
 
-public class ActionType {
-
+public enum ActionType {
+    BASIC_ATTACK,
+    DEFEND,
+    ITEM,
+    SPECIAL_SKILL
 }
