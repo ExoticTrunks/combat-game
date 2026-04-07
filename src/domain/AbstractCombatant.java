@@ -14,6 +14,7 @@ public abstract class AbstractCombatant implements Combatant {
     private int hp;
     private int specialCooldownRemaining;
     private final List<StatusEffect> statusEffects;
+    
     protected AbstractCombatant(String name, int maxHp, int attack, int defense, int speed) {
         this.name = name;
         this.maxHp = maxHp;
