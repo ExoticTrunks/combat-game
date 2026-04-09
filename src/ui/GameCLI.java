@@ -1,39 +1,31 @@
-package com.ntu.sc2002.arena.ui;
-
-import com.ntu.sc2002.arena.actions.BasicAttackAction;
-import com.ntu.sc2002.arena.actions.BattleAction;
-import com.ntu.sc2002.arena.actions.DefendAction;
-import com.ntu.sc2002.arena.actions.UseItemAction;
-import com.ntu.sc2002.arena.domain.AbstractCombatant;
-import com.ntu.sc2002.arena.domain.Combatant;
-import com.ntu.sc2002.arena.domain.Enemy;
-import com.ntu.sc2002.arena.domain.PlayerCharacter;
-import com.ntu.sc2002.arena.engine.BasicEnemyActionStrategy;
-import com.ntu.sc2002.arena.engine.BattleContext;
-import com.ntu.sc2002.arena.engine.BattleEngine;
-import com.ntu.sc2002.arena.engine.BattleResult;
-import com.ntu.sc2002.arena.engine.BattleUI;
-import com.ntu.sc2002.arena.engine.SpeedTurnOrderStrategy;
-import com.ntu.sc2002.arena.items.Inventory;
-import com.ntu.sc2002.arena.items.Item;
-import com.ntu.sc2002.arena.items.Potion;
-import com.ntu.sc2002.arena.items.PowerStone;
-import com.ntu.sc2002.arena.items.SmokeBomb;
-import com.ntu.sc2002.arena.level.LevelConfig;
-import com.ntu.sc2002.arena.level.LevelFactory;
+package ui;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import actions.BasicAttackAction;
+import actions.BattleAction;
+import actions.DefendAction;
+import actions.UseItemAction;
+import domain.AbstractCombatant;
+import domain.Combatant;
+import domain.Enemy;
+import domain.PlayerCharacter;
+import engine.BasicEnemyActionStrategy;
+import engine.BattleContext;
+import engine.BattleEngine;
+import engine.BattleUI;
+import engine.SpeedTurnOrderStrategy;
+import items.Inventory;
+import items.Item;
+import items.Potion;
+import items.PowerStone;
+import items.SmokeBomb;
+import level.LevelConfig;
+import level.LevelFactory;
 
-/**
- * Command-line boundary class. Implements BattleUI so BattleEngine
- * depends on the abstraction, not this concrete class (DIP).
- */
 public class GameCLI implements BattleUI {
     private final Scanner scanner = new Scanner(System.in);
-
-    // Stored for "replay with same settings"
     private int lastPlayerChoice = -1;
     private int lastItem1Choice = -1;
     private int lastItem2Choice = -1;
@@ -57,7 +49,6 @@ public class GameCLI implements BattleUI {
             int postChoice = postGameMenu();
             switch (postChoice) {
                 case 1 -> {
-                    // Replay with same settings
                     replayLoop(level);
                 }
                 case 2 -> {
@@ -69,10 +60,7 @@ public class GameCLI implements BattleUI {
         System.out.println("Thanks for playing Turn-Based Combat Arena.");
     }
 
-    /**
-     * Replays with the same player/items/level until the player
-     * chooses new game or exit.
-     */
+    // Replay system
     private void replayLoop(LevelConfig level) {
         boolean replaying = true;
         while (replaying) {
@@ -99,7 +87,7 @@ public class GameCLI implements BattleUI {
         }
     }
 
-    // ========== Loading Screen ==========
+    // Loading Screen
 
     public void printLoadingScreen() {
         System.out.println("========================================");
@@ -121,7 +109,7 @@ public class GameCLI implements BattleUI {
         System.out.println();
     }
 
-    // ========== Setup choices ==========
+    // Setup choices
 
     private Inventory chooseItems() {
         System.out.println("Choose 2 items (duplicates allowed):");
@@ -153,8 +141,8 @@ public class GameCLI implements BattleUI {
 
     private PlayerCharacter buildPlayer(int choice, Inventory inventory) {
         return choice == 1
-                ? new com.ntu.sc2002.arena.domain.Warrior(inventory)
-                : new com.ntu.sc2002.arena.domain.Wizard(inventory);
+                ? new domain.Warrior(inventory)
+                : new domain.Wizard(inventory);
     }
 
     private LevelConfig chooseLevel() {
@@ -176,7 +164,7 @@ public class GameCLI implements BattleUI {
         };
     }
 
-    // ========== BattleUI implementation ==========
+    // BattleUI implementation
 
     @Override
     public PlayerDecision getPlayerDecision(BattleContext context) {
@@ -218,7 +206,6 @@ public class GameCLI implements BattleUI {
                                 + player.getSpecialCooldownRemaining() + " turns). Choose another action.");
                         continue;
                     }
-                    // Use factory method — no instanceof needed (OCP)
                     BattleAction action = player.createSpecialSkillAction(false);
                     Combatant target = action.requiresTarget()
                             ? chooseTarget(context.getAliveEnemies()) : null;
@@ -272,7 +259,7 @@ public class GameCLI implements BattleUI {
         return alive.get(idx);
     }
 
-    // ========== Display methods ==========
+    // Display methods
 
     @Override
     public void showBattleState(BattleContext context) {
@@ -314,9 +301,9 @@ public class GameCLI implements BattleUI {
     public void showVictory(BattleContext context) {
         PlayerCharacter player = context.getPlayer();
         System.out.println();
-        System.out.println("*********************************************");
+        System.out.println("=============================================");
         System.out.println("              PLAYER VICTORY!                ");
-        System.out.println("*********************************************");
+        System.out.println("=============================================");
         System.out.println("Congratulations, you have defeated all your enemies.");
         System.out.println("Remaining HP: " + player.getHp() + "/" + player.getMaxHp()
                 + " | Total Rounds: " + context.getRoundNumber()
@@ -327,16 +314,16 @@ public class GameCLI implements BattleUI {
     @Override
     public void showDefeat(BattleContext context) {
         System.out.println();
-        System.out.println("*********************************************");
+        System.out.println("=============================================");
         System.out.println("              PLAYER DEFEAT                  ");
-        System.out.println("*********************************************");
-        System.out.println("Defeated. Don't give up, try again!");
+        System.out.println("=============================================");
+        System.out.println("Don't give up, try again!");
         System.out.println("Enemies remaining: " + context.getAliveEnemies().size()
                 + " | Total Rounds Survived: " + context.getRoundNumber());
         System.out.println();
     }
 
-    // ========== Post-game menu ==========
+    // Post-game menu
 
     private int postGameMenu() {
         System.out.println("What would you like to do?");
@@ -346,7 +333,7 @@ public class GameCLI implements BattleUI {
         return promptInt("Choose: ", 1, 3);
     }
 
-    // ========== Input utility ==========
+    // Input utility
 
     private int promptInt(String prompt, int min, int max) {
         while (true) {

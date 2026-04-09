@@ -3,6 +3,7 @@ package engine;
 import java.util.ArrayList;
 import java.util.List;
 
+import actions.BattleAction;
 import domain.Combatant;
 import domain.Enemy;
 import domain.PlayerCharacter;
@@ -11,6 +12,7 @@ public class BattleContext {
 	private int roundNumber;
 	private PlayerCharacter player;
 	private List<Enemy> enemies;
+	private List<String> logs = new ArrayList<String>();
 	
     public BattleContext(PlayerCharacter player, List<Enemy> enemies) {
         this.player = player;
@@ -34,7 +36,33 @@ public class BattleContext {
 	}
 	
 	public void log(String message) {
-		//TODO
+		logs.add(message);
+	}
+
+	public void log(Combatant combatant1, BattleAction action, Combatant combatant2) {
+		//TODO: (E)
+		logs.add(combatant1 + "");
+	}
+	
+	// Logs current state
+	public void log() {
+		//TODO: (E)
+		logs.add("");
+	}
+	
+	public void log(DifficultyLevel difficultyLevel) {
+		//TODO: (E)
+		continue;
+	}
+	
+	public List<String> consumeLog() {
+		List<String> copy = new ArrayList<String>(logs);
+		logs.clear();
+		return copy;
+	}
+	
+	public void resetLog() {
+		logs.clear();
 	}
 
 	public PlayerCharacter getPlayer() {
@@ -43,5 +71,13 @@ public class BattleContext {
 	
 	public int getRoundNumber() {
 		return roundNumber;
+	}
+
+	public void incrementRoundNumber() {
+		++roundNumber;
+	}
+	
+	public void spawnNewEnemies(List<Enemy> enemies) {
+		enemies.addAll(enemies);
 	}
 }
