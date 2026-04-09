@@ -2,7 +2,6 @@ package engine;
 
 import actions.BasicAttackAction;
 import domain.Enemy;
-import domain.PlayerCharacter;
 
 public class BasicEnemyActionStrategy implements EnemyActionStrategy{
     private final BasicAttackAction basicAttackAction = new BasicAttackAction();
