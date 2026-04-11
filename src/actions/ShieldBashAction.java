@@ -9,7 +9,7 @@ public class ShieldBashAction implements BattleAction {
     private final boolean ignoreCooldown;
 
     public ShieldBashAction() {
-        this(false);
+        this(false); 
     }
 
     public ShieldBashAction(boolean ignoreCooldown) {

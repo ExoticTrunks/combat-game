@@ -13,7 +13,7 @@ public class ArcaneBlastAction implements BattleAction {
     private final boolean ignoreCooldown;
 
     public ArcaneBlastAction() {
-        this(false);
+        this(false); 
     }
 
     public ArcaneBlastAction(boolean ignoreCooldown) {

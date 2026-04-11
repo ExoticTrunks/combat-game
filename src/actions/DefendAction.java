@@ -8,7 +8,7 @@ public class DefendAction implements BattleAction {
     @Override
     public String getName() {
         return "Defend";
-    }
+    } 
 
     @Override
     public void execute(BattleContext context, Combatant actor, Combatant target) {

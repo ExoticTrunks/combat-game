@@ -9,9 +9,9 @@ public class UseItemAction implements BattleAction {
     private final Item item;
 
     public UseItemAction(Item item) {
-        this.item = item;
-    }
-
+        this.item = item; 
+    } 
+    
     @Override
     public String getName() {
         return "UseItem(" + item.getName() + ")";
