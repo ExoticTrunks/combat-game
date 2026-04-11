@@ -1,12 +1,13 @@
 package engine;
 
+import ui.PlayerDecision;
 
 public interface BattleUI {
 
     void showBattleState(BattleContext context);
 
-    //TODO: update this when PlayerDecision is added
-    //PlayerDecision getPlayerDecision(BattleContext context);
+    
+    PlayerDecision getPlayerDecision(BattleContext context);
 
 
     void showVictory(BattleContext context);

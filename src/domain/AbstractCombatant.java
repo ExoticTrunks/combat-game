@@ -11,11 +11,10 @@ public abstract class AbstractCombatant implements Combatant {
     private final int baseAttack;
     private final int baseDefense;
     private final int speed;
-
     private int hp;
     private int specialCooldownRemaining;
     private final List<StatusEffect> statusEffects;
-
+    
     protected AbstractCombatant(String name, int maxHp, int attack, int defense, int speed) {
         this.name = name;
         this.maxHp = maxHp;
@@ -26,7 +25,6 @@ public abstract class AbstractCombatant implements Combatant {
         this.specialCooldownRemaining = 0;
         this.statusEffects = new ArrayList<>();
     }
-
     @Override
     public String getName() {
         return name;
@@ -41,11 +39,19 @@ public abstract class AbstractCombatant implements Combatant {
     }
     @Override
     public int getAttack() {
-        // to complete
+        int bonus = 0;
+        for (StatusEffect effect : statusEffects) {
+            bonus += effect.getAttackBonus();
+        }
+        return baseAttack + bonus;
     }
     @Override
     public int getDefense() {
-        // To complete
+        int bonus = 0;
+        for (StatusEffect effect : statusEffects) {
+            bonus += effect.getDefenseBonus();
+        }
+        return baseDefense + bonus;
     }
     @Override
     public int getSpeed() {
@@ -128,9 +134,21 @@ public abstract class AbstractCombatant implements Combatant {
         }
     }
     private void removeExpiredEffects() {
-        // To complete
+        Iterator<StatusEffect> iterator = statusEffects.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().isExpired()) {
+                iterator.remove();
+            }
+        }
     }
     public String statusSummary() {
-        // To complete
+        if (statusEffects.isEmpty()) {
+            return "-";
+        }
+        List<String> parts = new ArrayList<>();
+        for (StatusEffect effect : statusEffects) {
+            parts.add(effect.describe());
+        }
+        return String.join(", ", parts);
     }
 }
