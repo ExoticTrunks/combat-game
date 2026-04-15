@@ -1,5 +1,7 @@
 package engine;
 
+import java.util.List;
+
 import ui.PlayerDecision;
 
 public interface BattleUI {
@@ -14,4 +16,7 @@ public interface BattleUI {
 
 
     void showDefeat(BattleContext context);
+    
+    
+    void printEvents(List<String> events);
 }

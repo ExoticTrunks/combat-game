@@ -2,6 +2,7 @@ package engine;
 
 import java.util.List;
 
+import actions.BattleAction;
 import domain.Combatant;
 import domain.Enemy;
 import domain.PlayerCharacter;
@@ -13,6 +14,7 @@ public class BattleEngine {
 	private TurnOrderStrategy turnOrderStrategy;
 	private EnemyActionStrategy enemyActionStrategy;
 	private BattleUI ui;
+	private List<BattleEngineObserver> observers;
 	
 	public BattleEngine(TurnOrderStrategy turnOrderStrategy, EnemyActionStrategy enemyActionStrategy, BattleUI ui) {
 		this.turnOrderStrategy = turnOrderStrategy;
@@ -23,50 +25,130 @@ public class BattleEngine {
 	public BattleResult runBattle(PlayerCharacter player, LevelConfig levelConfig) {
 		DifficultyLevel difficultyLevel = levelConfig.getDifficulty();
 		
-//		List<List<Enemy>> waves = LevelEnemyFactory.spawnAndGetAllEnemyWaves(difficultyLevel);
-		boolean victory;
-		
+		boolean victory = false;
+		boolean gameOver = false;
 		BattleContext battleContext = new BattleContext(player, levelConfig.getAndProgressWave());
-		while(true) {
+		AddObserver(battleContext);
+		onLevelStart(levelConfig);
+		
+		while(!gameOver) {
 			battleContext.incrementRoundNumber();
-			// Spawn condition
-			if(battleContext.allEnemiesDefeated()) {
-				if(levelConfig.hasBackupWave()) {
-					battleContext.spawnNewEnemies(levelConfig.getAndProgressWave());
+			
+			onNewRoundStart(battleContext.getRoundNumber());
+			
+			
+			// Start to end turn for combatants
+			List<Combatant> sortedCombatants = turnOrderStrategy.determineTurnOrder(battleContext.getAllCombatants());
+			onTurnOrderDetermined(sortedCombatants);
+			
+			for(Combatant combatant : sortedCombatants) {
+				BattleAction actionUsed;
+				Combatant target;
+				
+				// Combatant turn
+				combatant.startTurn();
+				onCombatantTurnStart(combatant);
+				if (combatant.canAct()) {
+					if(combatant.isPlayer()) {
+						ui.printEvents(battleContext.consumeLog());
+						PlayerDecision decision = ui.getPlayerDecision(battleContext);
+						actionUsed = decision.action();
+						target = decision.target();
+						
+						actionUsed.execute(battleContext, combatant, target);
+					}
+					else {
+						target = battleContext.getPlayer();
+						actionUsed = enemyActionStrategy.execute(battleContext, (Enemy) combatant);
+					}
+					onCombatantAction(combatant, actionUsed, target);
 				}
-				// Victory condition
-				else {
-					victory = true;
+				combatant.endTurn();
+				
+				
+				// Spawn condition
+				if(battleContext.allEnemiesDefeated()) {
+					if(levelConfig.hasBackupWave()) {
+						List<Enemy> enemiesSpawned = battleContext.spawnNewEnemies(levelConfig.getAndProgressWave());
+						onBackupSpawn(enemiesSpawned);
+					}
+					// Victory condition
+					else {
+						victory = true;
+						gameOver = true;
+						break;
+					}
+					
+				}
+				// Loss condition
+				else if(!player.isAlive()) {
+					victory = false;
+					gameOver = true;
 					break;
 				}
 				
 			}
-			// Loss condition
-			else if(!player.isAlive()) {
-				victory = false;
-				break;
-			}
-			
-			// Start to end turn for combatants
-			List<Combatant> sortedCombatants = turnOrderStrategy.determineTurnOrder(battleContext.getAllCombatants());
-			for(Combatant combatant : sortedCombatants) {
-				combatant.startTurn();
-				if (combatant.canAct()) {
-					if(combatant.isPlayer()) {
-						PlayerDecision decision = ui.getPlayerDecision(battleContext);
-						//TODO: player decision execution
-					}
-					else {
-						enemyActionStrategy.execute(battleContext, (Enemy) combatant);
-					}
-				}
-				combatant.endTurn();
-			}
+			onRoundEnd(battleContext);
+            ui.printEvents(battleContext.consumeLog());
+            ui.showBattleState(battleContext);
 		}
-		
+
+        ui.printEvents(battleContext.consumeLog());
 		BattleResult battleResult = new BattleResult(victory, battleContext.getRoundNumber(),
 				(victory) ? player.getHp() : battleContext.getAliveEnemies().size());
 		
 		return battleResult;
+	}
+	
+	public void AddObserver(BattleEngineObserver observer) {
+		observers.add(observer);
+	}
+	
+	public void RemoveObserver(BattleEngineObserver observer) {
+		observers.remove(observer);
+	}
+	
+	private void onLevelStart(LevelConfig level) {
+		// Update observers
+		for(BattleEngineObserver observer: observers) {
+			observer.onLevelStart(level);
+		}
+	}
+
+	private void onNewRoundStart(int roundNumber) {
+		// Update observers
+		for(BattleEngineObserver observer: observers) {
+			observer.onNewRoundStart(roundNumber);
+		}
+	}
+	private void onTurnOrderDetermined(List<Combatant> orderedCombatants) {
+		// Update observers
+		for(BattleEngineObserver observer: observers) {
+			observer.onTurnOrderDetermined(orderedCombatants);
+		}
+	}
+	private void onCombatantTurnStart(Combatant combatant) {
+		// Update observers
+		for(BattleEngineObserver observer: observers) {
+			observer.onCombatantTurnStart(combatant);
+		}
+	}
+	private void onCombatantAction(Combatant dealer, BattleAction action, Combatant target) {
+		// Update observers
+		for(BattleEngineObserver observer: observers) {
+			observer.onCombatantAction(dealer, action, target);
+		}
+	}
+	private void onRoundEnd(BattleContext battleContext) {
+		// Update observers
+		for(BattleEngineObserver observer: observers) {
+			observer.onRoundEnd(battleContext);
+		}
+	}
+	private void onBackupSpawn(List<Enemy> enemySpawned) {
+		// Update observers
+		for(BattleEngineObserver observer: observers) {
+			observer.onBackupSpawn(enemySpawned);
+		}
 	}
 }
