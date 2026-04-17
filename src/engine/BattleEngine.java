@@ -32,7 +32,7 @@ public class BattleEngine {
 		boolean victory = false;
 		boolean gameOver = false;
 		BattleContext battleContext = new BattleContext(player, levelConfig.getAndProgressWave());
-		AddObserver(battleContext);
+		addObserver(battleContext);
 		onLevelStart(levelConfig);
 		
 		while(!gameOver) {
@@ -104,11 +104,11 @@ public class BattleEngine {
 		return battleResult;
 	}
 	
-	public void AddObserver(BattleEngineObserver observer) {
+	public void addObserver(BattleEngineObserver observer) {
 		observers.add(observer);
 	}
 	
-	public void RemoveObserver(BattleEngineObserver observer) {
+	public void removeObserver(BattleEngineObserver observer) {
 		observers.remove(observer);
 	}
 	
