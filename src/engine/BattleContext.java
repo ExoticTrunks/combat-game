@@ -59,8 +59,8 @@ public class BattleContext implements BattleEngineObserver {
 	}
 	
 	public List<Enemy> spawnNewEnemies(List<Enemy> enemies) {
-		enemies.addAll(enemies);
-		return enemies;
+		this.enemies.addAll(enemies);
+		return this.enemies;
 	}
 
 	public List<String> consumeLog() {

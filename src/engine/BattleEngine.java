@@ -1,5 +1,6 @@
 package engine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import actions.BattleAction;
@@ -14,7 +15,7 @@ public class BattleEngine {
 	private TurnOrderStrategy turnOrderStrategy;
 	private EnemyActionStrategy enemyActionStrategy;
 	private BattleUI ui;
-	private List<BattleEngineObserver> observers;
+	private List<BattleEngineObserver> observers = new ArrayList<BattleEngineObserver>();
 	
 	public BattleEngine(TurnOrderStrategy turnOrderStrategy, EnemyActionStrategy enemyActionStrategy, BattleUI ui) {
 		this.turnOrderStrategy = turnOrderStrategy;
@@ -24,6 +25,9 @@ public class BattleEngine {
 	
 	public BattleResult runBattle(PlayerCharacter player, LevelConfig levelConfig) {
 		DifficultyLevel difficultyLevel = levelConfig.getDifficulty();
+		
+//		enemyActionStrategy = new HardEnemyActionStrategy();
+//		enemyActionStrategy = new FSMEnemyActionStrategy();
 		
 		boolean victory = false;
 		boolean gameOver = false;
@@ -71,6 +75,7 @@ public class BattleEngine {
 					if(levelConfig.hasBackupWave()) {
 						List<Enemy> enemiesSpawned = battleContext.spawnNewEnemies(levelConfig.getAndProgressWave());
 						onBackupSpawn(enemiesSpawned);
+						break;
 					}
 					// Victory condition
 					else {
@@ -86,7 +91,6 @@ public class BattleEngine {
 					gameOver = true;
 					break;
 				}
-				
 			}
 			onRoundEnd(battleContext);
             ui.printEvents(battleContext.consumeLog());
