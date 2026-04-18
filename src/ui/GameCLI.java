@@ -292,6 +292,7 @@ public class GameCLI implements BattleUI {
 
     @Override
     public void printEvents(List<String> events) {
+        System.out.println("----------------------------------------------");
         for (String event : events) {
             System.out.println(event);
         }
