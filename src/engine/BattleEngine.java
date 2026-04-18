@@ -26,9 +26,6 @@ public class BattleEngine {
 	public BattleResult runBattle(PlayerCharacter player, LevelConfig levelConfig) {
 		DifficultyLevel difficultyLevel = levelConfig.getDifficulty();
 		
-//		enemyActionStrategy = new HardEnemyActionStrategy();
-//		enemyActionStrategy = new FSMEnemyActionStrategy();
-		
 		boolean victory = false;
 		boolean gameOver = false;
 		BattleContext battleContext = new BattleContext(player, levelConfig.getAndProgressWave());
@@ -98,9 +95,14 @@ public class BattleEngine {
 		}
 
         ui.printEvents(battleContext.consumeLog());
+		if (victory) {
+			ui.showVictory(battleContext);
+		} 
+		else {
+			ui.showDefeat(battleContext);
+		}
 		BattleResult battleResult = new BattleResult(victory, battleContext.getRoundNumber(),
 				(victory) ? player.getHp() : battleContext.getAliveEnemies().size());
-		
 		return battleResult;
 	}
 	
