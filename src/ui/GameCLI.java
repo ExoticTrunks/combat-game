@@ -266,7 +266,7 @@ public class GameCLI implements BattleUI {
         PlayerCharacter player = context.getPlayer();
         AbstractCombatant p = (AbstractCombatant) player;
 
-        System.out.println("End of Round " + context.getRoundNumber());
+        System.out.println("Round " + context.getRoundNumber());
         System.out.println(player.getName()
                 + " | HP " + player.getHp() + "/" + player.getMaxHp()
                 + " | ATK " + player.getAttack()
