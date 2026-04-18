@@ -70,8 +70,9 @@ public class BattleEngine {
 				// Spawn condition
 				if(battleContext.allEnemiesDefeated()) {
 					if(levelConfig.hasBackupWave()) {
-						List<Enemy> enemiesSpawned = battleContext.spawnNewEnemies(levelConfig.getAndProgressWave());
-						onBackupSpawn(enemiesSpawned);
+						List<Enemy> backupWave = levelConfig.getAndProgressWave();
+						battleContext.spawnNewEnemies(backupWave);
+						onBackupSpawn(backupWave);
 						break;
 					}
 					// Victory condition
