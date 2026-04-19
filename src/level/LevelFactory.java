@@ -52,4 +52,15 @@ public class LevelFactory {
 			
 		return allEnemies;
 	}
+    public static LevelConfig easy() {
+        return new LevelConfig(DifficultyLevel.EASY, spawnAndGetAllEnemyWaves(DifficultyLevel.EASY));
+    }
+
+    public static LevelConfig medium() {
+        return new LevelConfig(DifficultyLevel.MEDIUM, spawnAndGetAllEnemyWaves(DifficultyLevel.MEDIUM));
+    }
+
+    public static LevelConfig hard() {
+        return new LevelConfig(DifficultyLevel.HARD, spawnAndGetAllEnemyWaves(DifficultyLevel.HARD));
+    }
 }

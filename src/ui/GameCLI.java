@@ -66,13 +66,13 @@ public class GameCLI implements BattleUI {
         while (replaying) {
             Inventory inv = buildInventory(lastItem1Choice, lastItem2Choice);
             PlayerCharacter player = buildPlayer(lastPlayerChoice, inv);
-
+            LevelConfig freshLevel = buildLevel(lastLevelChoice);
             BattleEngine engine = new BattleEngine(
                     new SpeedTurnOrderStrategy(),
                     new BasicEnemyActionStrategy(),
                     this
             );
-            engine.runBattle(player, level);
+            engine.runBattle(player, freshLevel);
 
             int postChoice = postGameMenu();
             switch (postChoice) {
@@ -292,6 +292,7 @@ public class GameCLI implements BattleUI {
 
     @Override
     public void printEvents(List<String> events) {
+        System.out.println("----------------------------------------------");
         for (String event : events) {
             System.out.println(event);
         }

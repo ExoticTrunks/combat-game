@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 
 import domain.Enemy;
 
-//TODO: (E) Change classdiagram for this
 public class LevelConfig {
 	private DifficultyLevel difficulty;
 	private List<List<Enemy>> waves;
@@ -33,6 +32,6 @@ public class LevelConfig {
     }
     
     public boolean hasBackupWave() {
-    	return currentWave <= waves.size();
+    	return currentWave < waves.size();
     }
 }
